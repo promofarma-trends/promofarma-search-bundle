@@ -1,0 +1,22 @@
+services:
+    most_spoken_of_the_month:
+            class: SearchBundle\Services\MostSpokenOfTheMonth
+            arguments:
+                - "@fos_elastica.manager.orm"
+    most_influenced_of_the_month:
+            class: SearchBundle\Services\MostInfluencedThemeOfTheMonth
+            arguments:
+                - "@fos_elastica.manager.orm"
+    evolution_of_the_most_spoken_topics:
+            class: SearchBundle\Services\EvolutionOfTheMostSpokenTopics
+            arguments:
+                - "@fos_elastica.manager.orm"
+    last_post:
+            class: SearchBundle\Services\LastPost
+            arguments:
+                - "@fos_elastica.manager.orm"
+    search_in_posts:
+            class: SearchBundle\Services\SearchInPosts
+            arguments:
+                - "@fos_elastica.manager.orm"
+                - "@evolution_of_the_most_spoken_topics"
