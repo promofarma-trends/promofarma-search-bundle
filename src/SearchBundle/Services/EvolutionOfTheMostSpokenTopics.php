@@ -14,6 +14,8 @@ class EvolutionOfTheMostSpokenTopics
 {
     const REPOSITORY = 'SearchBundle\Entity\NormalizedPost';
     const CHART_DATA_KEY = 'data_chart';
+    const CHART_DATA_VALUES_KEY = 'values';
+    const CHART_DATA_DATES_KEY = 'dates';
     const TOPIC_KEY = 'tag_name';
     const INIT_AND_FINAL_DATES_KEY = 'init_and_final_dates';
     const SCORE_PROPERTY = 'score';
@@ -29,6 +31,7 @@ class EvolutionOfTheMostSpokenTopics
     private $amountOfEachCategory = [];
     private $query;
     private $filter;
+    private $eachDayArray;
     private $dateFormat = 'Y-m-d';
     private $startingDate = "2017-06-01 00.00.00";
     private $increaseOneDay = "+1 day";
@@ -66,12 +69,12 @@ class EvolutionOfTheMostSpokenTopics
             $adapter = $repositoryPostTreated->createPaginatorAdapter($boolQuery);
             $amountOfACategory = $adapter->getTotalHits();
             $this->amountOfEachCategory[] = $amountOfACategory;
+            $this->eachDayArray[] = $transformedDate;
             $startDate = strtotime($this->increaseOneDay, $startDate);
         }
-        $firstAndLastDates = new FirstAndLastDatesTopic($this->repositoryManagerObject);
         $finalEvolutionChartArray[self::TOPIC_KEY] = $topic;
-        $finalEvolutionChartArray[self::CHART_DATA_KEY] = $this->amountOfEachCategory;
-        $finalEvolutionChartArray[self::INIT_AND_FINAL_DATES_KEY] = $firstAndLastDates->getFirstAndLastDateTopic($topic);
+        $finalEvolutionChartArray[self::CHART_DATA_KEY][self::CHART_DATA_VALUES_KEY] = $this->amountOfEachCategory;
+        $finalEvolutionChartArray[self::CHART_DATA_KEY][self::CHART_DATA_DATES_KEY] = $this->amountOfEachCategory;
         return $finalEvolutionChartArray;
     }
 

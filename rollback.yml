@@ -1,0 +1,7 @@
+- name: Rollback app
+  hosts: all
+  vars:
+    ansistrano_deploy_to: "/var/www/PromoFarma"
+    ansistrano_remove_rolled_back: yes
+  roles:
+    - carlosbuenosvinos.ansistrano-rollback

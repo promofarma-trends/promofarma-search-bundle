@@ -1,0 +1,14 @@
+---
+- name: Deploy de proyectos php ejemplo de my-app
+  hosts: all
+  vars:
+    ansistrano_deploy_from: "{{ playbook_dir }}"
+    ansistrano_deploy_to: "/var/www/PromoFarma"
+    ansistrano_keep_releases: 3
+    ansistrano_allow_anonymous_stats: false
+    ansistrano_after_symlink_tasks_file: "my-after-symlink-tasks.yml"
+    ansistrano_shared_paths:
+      - logs
+      - uploads
+  roles:
+  - { role: carlosbuenosvinos.ansistrano-deploy }
