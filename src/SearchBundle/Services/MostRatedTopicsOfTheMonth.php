@@ -8,7 +8,7 @@ use Elastica\Query\BoolQuery;
 use Elastica\Query\Filtered;
 use Elastica\Query\Match;
 
-class MostInfluencedThemeOfTheMonth
+class MostRatedTopicsOfTheMonth
 {
     const REPOSITORY = 'SearchBundle\Entity\NormalizedPost';
     const START_ARRAY_POSITION = 0;

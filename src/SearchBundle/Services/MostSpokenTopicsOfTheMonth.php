@@ -6,7 +6,7 @@ use Elastica\Query\Filtered;
 use Elastica\Query\Range;
 use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 
-class MostSpokenOfTheMonth
+class MostSpokenTopicsOfTheMonth
 {
     const REPOSITORY = 'SearchBundle\Entity\NormalizedPost';
     const TAGS_PROPERTY = 'tags';
@@ -20,7 +20,7 @@ class MostSpokenOfTheMonth
     const KEEP_ARRAY_KEYS = true;
     private $repositoryManagerObject;
     private $matchAllQuery;
-    private $themeAggregation;
+    private $topicAggregation;
     private $query;
 
     public function __construct(RepositoryManagerInterface $repositoryManager)
@@ -28,7 +28,7 @@ class MostSpokenOfTheMonth
         $this->repositoryManagerObject = $repositoryManager;
         $this->matchAllQuery = new \Elastica\Query\MatchAll();
         $this->query = new \Elastica\Query($this->matchAllQuery);
-        $this->themeAggregation = new \Elastica\Aggregation\Terms(self::TOPIC_NAME);
+        $this->topicAggregation = new \Elastica\Aggregation\Terms(self::TOPIC_NAME);
     }
 
     /**
@@ -71,9 +71,9 @@ class MostSpokenOfTheMonth
 
     private function getTimeAndTagsFilter($currentMonthFilter)
     {
-        $this->themeAggregation->setField(self::TAGS_PROPERTY);
+        $this->topicAggregation->setField(self::TAGS_PROPERTY);
         $this->query->setQuery($currentMonthFilter);
-        $this->query->addAggregation($this->themeAggregation);
+        $this->query->addAggregation($this->topicAggregation);
         $this->query->setSize(0);
         return $this->query;
     }

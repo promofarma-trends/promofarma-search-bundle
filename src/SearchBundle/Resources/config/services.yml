@@ -1,10 +1,10 @@
 services:
     most_spoken_of_the_month:
-            class: SearchBundle\Services\MostSpokenOfTheMonth
+            class: SearchBundle\Services\MostSpokenTopicsOfTheMonth
             arguments:
                 - "@fos_elastica.manager.orm"
     most_influenced_of_the_month:
-            class: SearchBundle\Services\MostInfluencedThemeOfTheMonth
+            class: SearchBundle\Services\MostRatedTopicsOfTheMonth
             arguments:
                 - "@fos_elastica.manager.orm"
     evolution_of_the_most_spoken_topics:

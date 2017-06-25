@@ -74,7 +74,7 @@ class EvolutionOfTheMostSpokenTopics
         }
         $finalEvolutionChartArray[self::TOPIC_KEY] = $topic;
         $finalEvolutionChartArray[self::CHART_DATA_KEY][self::CHART_DATA_VALUES_KEY] = $this->amountOfEachCategory;
-        $finalEvolutionChartArray[self::CHART_DATA_KEY][self::CHART_DATA_DATES_KEY] = $this->amountOfEachCategory;
+        $finalEvolutionChartArray[self::CHART_DATA_KEY][self::CHART_DATA_DATES_KEY] = $this->eachDayArray;
         return $finalEvolutionChartArray;
     }
 

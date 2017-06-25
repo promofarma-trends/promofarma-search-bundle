@@ -1,5 +1,6 @@
 <?php
 namespace SearchBundle\Controller;
+use Elastica\JSON;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -7,16 +8,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SearchController extends Controller
 {
-    /**
-     * @Route("/", name="homepage")
-     */
-    public function indexAction(Request $request)
-    {
-        // replace this example code with whatever you need
-        return $this->render('default/index.html.twig', [
-            'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR,
-        ]);
-    }
     /**
      *
      * @Route("/mostSpokenTopicsOfMonth", name="mostSpokenTopicsOfMonth")
@@ -55,7 +46,6 @@ class SearchController extends Controller
     public function lastPostAction(Request $request)
     {
         $lastPost = $this->get('last_post')->getLatestPost();
-
         return new JsonResponse($lastPost);
 
     }
