@@ -1,0 +1,10 @@
+services:
+   index_item.create_post:
+     class: DataBundle\Services\CreateNewPost
+     arguments:
+       - "@doctrine.orm.default_entity_manager"
+
+   index_item.message_handler:
+     class: DataBundle\Infrastructure\IndexPostMessageHandler
+     arguments:
+       - "@doctrine.orm.default_entity_manager"

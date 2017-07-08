@@ -13,11 +13,12 @@ class MostSpokenTopicsOfTheMonth
     const TOPIC_NAME = 'Topic';
     const BUCKETS = 'buckets';
     const CREATED_AT_PROPERTY = 'created_at';
-    const FIRST_DAY_OF_THE_MONTH = '01';
-    const LAST_DAT_OF_THE_MONTH = '30';
     const START_ARRAY_POSITION = 0;
     const MAXIMUM_ARRAY_LENGTH = 100;
     const KEEP_ARRAY_KEYS = true;
+    const ONE_MONTH_AGO = "1 month ago";
+    const NOW = "now";
+    private $dateFormat = 'Y-m-d';
     private $repositoryManagerObject;
     private $matchAllQuery;
     private $topicAggregation;
@@ -43,7 +44,7 @@ class MostSpokenTopicsOfTheMonth
         $aggregationPaginatorAdapter = $repositoryPostTreated->createPaginatorAdapter($this->query);
         $aggregationResult = $aggregationPaginatorAdapter->getAggregations();
         $bucketsResult = $aggregationResult[self::TOPIC_NAME][self::BUCKETS];
-        return array_slice ($bucketsResult,
+        return  array_slice ($bucketsResult,
             self::START_ARRAY_POSITION,
             self::MAXIMUM_ARRAY_LENGTH,
             self::KEEP_ARRAY_KEYS
@@ -56,14 +57,14 @@ class MostSpokenTopicsOfTheMonth
         $rangeLower = new Filtered(
             new BoolQuery(),
             new Range(self::CREATED_AT_PROPERTY, array(
-                'gte' => date('Y').'-'.date('m').'-'. self::FIRST_DAY_OF_THE_MONTH
+                'gte' => date($this->dateFormat, strtotime(self::ONE_MONTH_AGO))
             ))
         );
 
         $timeRangeFilter = new Filtered(
             $rangeLower,
             new Range(self::CREATED_AT_PROPERTY, array(
-                'lte' => date('Y').'-'.date('m').'-'. self::LAST_DAT_OF_THE_MONTH
+                'lte' => date($this->dateFormat, strtotime(self::NOW))
             ))
         );
         return $timeRangeFilter;
@@ -75,6 +76,5 @@ class MostSpokenTopicsOfTheMonth
         $this->query->setQuery($currentMonthFilter);
         $this->query->addAggregation($this->topicAggregation);
         $this->query->setSize(0);
-        return $this->query;
     }
 }

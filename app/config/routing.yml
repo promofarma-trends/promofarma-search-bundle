@@ -1,3 +1,5 @@
 search:
     resource: '@SearchBundle/Controller/'
     type: annotation
+
+

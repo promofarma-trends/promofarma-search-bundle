@@ -21,8 +21,8 @@ class EvolutionOfTheMostSpokenTopics
     const SCORE_PROPERTY = 'score';
     const TAGS_PROPERTY = 'tags';
     const CREATED_AT_PROPERTY = 'created_at';
-    private $repositoryManagerObject;
-    private $boolQuery;
+    const DEFAULT_DATE_FORMAT = 'Y-m-d';
+    const INCREASE_ONE_DATE = '+1 day';
     private $fieldQuery;
     private $currentDate;
     private $currentYear;
@@ -32,14 +32,12 @@ class EvolutionOfTheMostSpokenTopics
     private $query;
     private $filter;
     private $eachDayArray;
-    private $dateFormat = 'Y-m-d';
+    //TODO: remove starting date and get the date from the repo
     private $startingDate = "2017-06-01 00.00.00";
-    private $increaseOneDay = "+1 day";
 
     public function __construct(RepositoryManagerInterface $repositoryManager)
     {
-        $this->repositoryManagerObject = $repositoryManager;
-        $this->boolQuery = new BoolQuery();
+        $this->repository = $repositoryManager->getRepository(self::REPOSITORY);
         $this->fieldQuery = new Match();
         $this->termQuery = new Term();
         $this->currentDate = getdate();
@@ -56,23 +54,26 @@ class EvolutionOfTheMostSpokenTopics
      */
     public function setEvolutionChartOfTheMostSpoken($topic)
     {
-        $repositoryPostTreated = $this->repositoryManagerObject->getRepository(self::REPOSITORY);
         $startDate = strtotime($this->startingDate);
+        //TODO: use DateTime class
         $endDate = strtotime($this->currentYear.'-'.$this->currentMonth.'-'.$this->currentDay, $startDate);
+        //TODO: new method
         while ($startDate <= $endDate) {
             $boolQuery = new BoolQuery();
             $this->fieldQuery->setFieldQuery(self::TAGS_PROPERTY, array($topic));
             $boolQuery->addMust($this->fieldQuery);
-            $transformedDate = date($this->dateFormat, $startDate);
+            $transformedDate = date(self::DEFAULT_DATE_FORMAT, $startDate);
             $timeRange = $this->setTimeRangeFilter($transformedDate);
             $boolQuery->addMust($timeRange);
-            $adapter = $repositoryPostTreated->createPaginatorAdapter($boolQuery);
+            $adapter = $this->repository->createPaginatorAdapter($boolQuery);
             $amountOfACategory = $adapter->getTotalHits();
             $this->amountOfEachCategory[] = $amountOfACategory;
             $this->eachDayArray[] = $transformedDate;
-            $startDate = strtotime($this->increaseOneDay, $startDate);
+            $startDate = strtotime(self::INCREASE_ONE_DATE, $startDate);
         }
+        //TODO: pending to remove topic
         $finalEvolutionChartArray[self::TOPIC_KEY] = $topic;
+        //TODO: change key-> date value->amount ???
         $finalEvolutionChartArray[self::CHART_DATA_KEY][self::CHART_DATA_VALUES_KEY] = $this->amountOfEachCategory;
         $finalEvolutionChartArray[self::CHART_DATA_KEY][self::CHART_DATA_DATES_KEY] = $this->eachDayArray;
         return $finalEvolutionChartArray;

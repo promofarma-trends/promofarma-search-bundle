@@ -1,6 +1,7 @@
 <?php
 namespace SearchBundle\Controller;
-use Elastica\JSON;
+
+use SearchBundle\Entity\NormalizedPost;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -60,5 +61,4 @@ class SearchController extends Controller
         return new JsonResponse($foundInPosts);
 
     }
-
 }

@@ -19,8 +19,9 @@ class MostRatedTopicsOfTheMonth
     const CREATED_AT_PROPERTY = 'created_at';
     const TOPIC_NAME = 'Topic';
     const BUCKETS = 'buckets';
-    const FIRST_DAY_OF_THE_MONTH = '01';
-    const LAST_DAT_OF_THE_MONTH = '30';
+    const ONE_MONTH_AGO = "1 month ago";
+    const NOW = "now";
+    private $dateFormat = 'Y-m-d';
     private $repositoryManagerObject;
     private $boolQuery;
     private $fieldQuery;
@@ -62,14 +63,14 @@ class MostRatedTopicsOfTheMonth
         $rangeLower = new Filtered(
             new BoolQuery(),
             new Range(self::CREATED_AT_PROPERTY, array(
-                'gte' => date('Y').'-'.date('m').'-'. self::FIRST_DAY_OF_THE_MONTH
+                'gte' => date($this->dateFormat, strtotime(self::ONE_MONTH_AGO))
             ))
         );
 
         $timeRangeFilter = new Filtered(
             $rangeLower,
             new Range(self::CREATED_AT_PROPERTY, array(
-                'lte' => date('Y').'-'.date('m').'-'. self::LAST_DAT_OF_THE_MONTH
+                'lte' => date($this->dateFormat, strtotime(self::NOW))
             ))
         );
         return $timeRangeFilter;

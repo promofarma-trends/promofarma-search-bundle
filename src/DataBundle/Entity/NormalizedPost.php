@@ -1,6 +1,6 @@
 <?php
 
-namespace SearchBundle\Entity;
+namespace DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 /**
@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class NormalizedPost
 {
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -37,7 +38,7 @@ class NormalizedPost
     public $score;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="string")
      */
     public $created_at;
 
