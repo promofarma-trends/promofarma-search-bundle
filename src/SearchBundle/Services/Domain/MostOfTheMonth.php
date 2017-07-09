@@ -11,11 +11,11 @@ abstract class MostOfTheMonth implements ElasticRepository
     const MAXIMUM_ARRAY_LENGTH = 100;
     const TOPIC_NAME = 'Topic';
     const TAGS_PROPERTY = 'tags';
+    const CREATED_AT_PROPERTY = 'created_at';
     const BUCKETS = 'buckets';
     const ONE_MONTH_AGO = "1 month ago";
     const NOW = "now";
-    const CREATED_AT_PROPERTY = 'created_at';
-    private $dateFormat = 'Y-m-d';
+    const DEFAULT_DATE_FORMAT = 'Y-m-d';
     protected $repositoryManagerObject;
     protected $query;
     protected $topicAggregation;
@@ -36,8 +36,8 @@ abstract class MostOfTheMonth implements ElasticRepository
 
     protected function getTimeRangeFilter(){
         $timeRangeFilter = $this->dateFilter->getTimeRangeFilter(
-            date($this->dateFormat, strtotime(self::ONE_MONTH_AGO)),
-            date($this->dateFormat, strtotime(self::NOW))
+            date(self::DEFAULT_DATE_FORMAT, strtotime(self::ONE_MONTH_AGO)),
+            date(self::DEFAULT_DATE_FORMAT, strtotime(self::NOW))
         );
         return $timeRangeFilter;
     }

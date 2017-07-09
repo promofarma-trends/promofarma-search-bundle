@@ -2,7 +2,6 @@
 
 namespace SearchBundle\Services;
 
-use Elastica\Filter\Range;
 use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 use Elastica\Query;
 use Elastica\Query\BoolQuery;
@@ -60,7 +59,7 @@ class EvolutionOfTheMostSpokenTopics implements ElasticRepository
         $dateOfTheFirstPost = $firstPost->getCreatedAt();
         return $dateOfTheFirstPost->getTimeStamp();
     }
-    
+
     private function evolutionArrayBuilder($topic, $startDate, $endDate)
     {
         while ($startDate <= $endDate) {
