@@ -18,51 +18,49 @@ class EvolutionOfTheMostSpokenTopics implements ElasticRepository
     const CHART_DATA_VALUES_KEY = 'values';
     const CHART_DATA_DATES_KEY = 'dates';
     const TOPIC_KEY = 'tag_name';
-    const INIT_AND_FINAL_DATES_KEY = 'init_and_final_dates';
-    const SCORE_PROPERTY = 'score';
     const TAGS_PROPERTY = 'tags';
     const CREATED_AT_PROPERTY = 'created_at';
     const DEFAULT_DATE_FORMAT = 'Y-m-d';
     const INCREASE_ONE_DATE = '+1 day';
+    private $repository;
     private $fieldQuery;
-    private $currentYear;
-    private $currentMonth;
-    private $currentDay;
     private $amountOfEachCategory = [];
     private $query;
     private $filter;
     private $eachDayArray;
     private $dateFilter;
-    //TODO: remove starting date and get the date from the repo
-    private $startingDate = "2017-06-01 00.00.00";
+    private $dateTime;
 
     public function __construct(RepositoryManagerInterface $repositoryManager)
     {
         $this->repository = $repositoryManager->getRepository(self::REPOSITORY);
         $this->fieldQuery = new Match();
         $this->termQuery = new Term();
-        $this->currentYear = date('Y');
-        $this->currentMonth = date('m');
-        $this->currentDay = date('d');
         $this->query = new Query();
         $this->filter = new Filtered();
         $this->dateFilter = new CreateDateFilter();
+        $this->dateTime = new \DateTime();
     }
 
     public function setEvolutionChartOfTheMostSpoken($topic)
     {
-        $startDate = strtotime($this->startingDate);
-        //TODO: use DateTime class
-        $endDate = strtotime($this->currentYear.'-'.$this->currentMonth.'-'.$this->currentDay, $startDate);
-        $this->evolutionArrayBuilder($topic, $startDate, $endDate);
-        //TODO: pending to remove topic
+        $startingDate = $this->getFirstPostDate();
+        $endDate = strtotime($this->dateTime->format(self::DEFAULT_DATE_FORMAT), $startingDate);
+        $this->evolutionArrayBuilder($topic, $startingDate, $endDate);
         $finalEvolutionChartArray[self::TOPIC_KEY] = $topic;
-        //TODO: change key-> date value->amount ???
         $finalEvolutionChartArray[self::CHART_DATA_KEY][self::CHART_DATA_VALUES_KEY] = $this->amountOfEachCategory;
         $finalEvolutionChartArray[self::CHART_DATA_KEY][self::CHART_DATA_DATES_KEY] = $this->eachDayArray;
         return $finalEvolutionChartArray;
     }
 
+    public function getFirstPostDate(){
+        $this->query->addSort(array(self::CREATED_AT_PROPERTY => array('order' => 'asc')));
+        $allPostsTopic = $this->repository->find($this->query);
+        $firstPost = reset($allPostsTopic);
+        $dateOfTheFirstPost = $firstPost->getCreatedAt();
+        return $dateOfTheFirstPost->getTimeStamp();
+    }
+    
     private function evolutionArrayBuilder($topic, $startDate, $endDate)
     {
         while ($startDate <= $endDate) {

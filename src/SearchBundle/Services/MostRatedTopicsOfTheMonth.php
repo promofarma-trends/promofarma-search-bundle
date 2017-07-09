@@ -11,9 +11,9 @@ use SearchBundle\Services\Domain\ArrayKeysTransformer;
 class MostRatedTopicsOfTheMonth extends MostOfTheMonth
 {
     const SCORE_PROPERTY = 'score';
+    const SCORES = ['10', '9', '8', '7', '6' ,'5','4', '3', '2', '1'];
     private $boolQuery;
     private $fieldQuery;
-    private $scores = ['10', '9', '8', '7', '6' ,'5','4', '3', '2', '1'];
     private $amountOfEachScore = [];
     private $transformedArray;
 
@@ -30,7 +30,7 @@ class MostRatedTopicsOfTheMonth extends MostOfTheMonth
         $currentMonthFilter = $this->getTimeRangeFilter();
         $this->boolQuery->addMust($currentMonthFilter);
         $this->amountOfEachScore = $this->getAmountOfEachScore($this->repositoryManagerObject);
-        $amountOfEachScoreTransformed = $this->transformedArray->getArrayTransformed($this->amountOfEachScore);
+        $amountOfEachScoreTransformed = $this->checkIfThereIsData();
         return array_slice ($amountOfEachScoreTransformed,
             self::START_ARRAY_POSITION,
             self::MAXIMUM_ARRAY_LENGTH,
@@ -39,7 +39,7 @@ class MostRatedTopicsOfTheMonth extends MostOfTheMonth
     }
 
     private function getAmountOfEachScore($repositoryPostTreated){
-        foreach($this->scores as $score ){
+        foreach(self::SCORES as $score ) {
             $this->fieldQuery->setFieldQuery(self::SCORE_PROPERTY, $score);
             $this->boolQuery->addMust($this->fieldQuery);
             $this->topicAggregation->setField(self::TAGS_PROPERTY);
@@ -51,5 +51,19 @@ class MostRatedTopicsOfTheMonth extends MostOfTheMonth
             $this->amountOfEachScore[$score] = $aggregationResult[self::TOPIC_NAME][self::BUCKETS];
         }
         return $this->amountOfEachScore;
+    }
+
+    private function checkIfThereIsData()
+    {
+        foreach ($this->amountOfEachScore as $eachScore) {
+            if (!empty($eachScore)) {
+                $amountOfEachScoreTransformed = $this->transformedArray->getArrayTransformed($this->amountOfEachScore);
+                break;
+            } else {
+                $amountOfEachScoreTransformed = $this->amountOfEachScore;
+                break;
+            }
+        }
+        return $amountOfEachScoreTransformed;
     }
 }
