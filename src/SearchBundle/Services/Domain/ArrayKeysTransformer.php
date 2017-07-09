@@ -1,6 +1,6 @@
 <?php
 
-namespace SearchBundle\Services;
+namespace SearchBundle\Services\Domain;
 
 class ArrayKeysTransformer
 {

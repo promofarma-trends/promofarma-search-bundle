@@ -15,7 +15,7 @@ class SearchController extends Controller
      */
     public function mostSpokenTopicsOfTheMonthControllerAction(Request $request)
     {
-        $mostSpokenThemeOfTheMonth = $this->get('most_spoken_of_the_month')->searchMostSpokenOfTheMonth();
+        $mostSpokenThemeOfTheMonth = $this->get('most_spoken_of_the_month')->search();
         return new JsonResponse($mostSpokenThemeOfTheMonth);
 
     }
@@ -25,7 +25,7 @@ class SearchController extends Controller
      */
     public function mostInfluencedTopicOfTheMonthAction(Request $request)
     {
-        $mostInfluencedThemeOfTheMonth = $this->get('most_influenced_of_the_month')->searchMostInfluencedOfTheMonth();
+        $mostInfluencedThemeOfTheMonth = $this->get('most_influenced_of_the_month')->search();
         return new JsonResponse($mostInfluencedThemeOfTheMonth);
 
     }

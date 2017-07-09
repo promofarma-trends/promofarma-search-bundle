@@ -4,9 +4,10 @@ namespace SearchBundle\Services;
 use Elastica\Query\BoolQuery;
 use Elastica\Query\Match;
 use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
-class SearchInPosts
+use SearchBundle\Infrastructure\ElasticRepository;
+
+class SearchInPosts implements ElasticRepository
 {
-    const REPOSITORY = 'SearchBundle\Entity\NormalizedPost';
     const TAGS_PROPERTY = 'tags';
     const CONTENT_PROPERTY = 'content';
     const SEARCHED_WORD_KEY = 'searched_word';
@@ -16,7 +17,7 @@ class SearchInPosts
     private $tagsQuery;
     private $contentQuery;
     private $boolQuery;
-    public function __construct(RepositoryManagerInterface $repositoryManager, EvolutionOfTheMostSpokenTopics $evolutionChart){
+    public function __construct(RepositoryManagerInterface $repositoryManager, EvolutionOfTheMostSpokenTopics $evolutionChart = null){
         $this->repositoryManagerObject = $repositoryManager;
         $this->tagsQuery = new Match();
         $this->contentQuery = new Match();

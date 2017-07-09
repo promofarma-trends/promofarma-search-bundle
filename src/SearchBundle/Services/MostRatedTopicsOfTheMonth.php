@@ -2,54 +2,34 @@
 
 namespace SearchBundle\Services;
 
-use Elastica\Filter\Range;
 use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
 use Elastica\Query\BoolQuery;
-use Elastica\Query\Filtered;
 use Elastica\Query\Match;
+use SearchBundle\Services\Domain\MostOfTheMonth;
+use SearchBundle\Services\Domain\ArrayKeysTransformer;
 
-class MostRatedTopicsOfTheMonth
+class MostRatedTopicsOfTheMonth extends MostOfTheMonth
 {
-    const REPOSITORY = 'SearchBundle\Entity\NormalizedPost';
-    const START_ARRAY_POSITION = 0;
-    const MAXIMUM_ARRAY_LENGTH = 100;
-    const KEEP_ARRAY_KEYS = true;
     const SCORE_PROPERTY = 'score';
-    const TAGS_PROPERTY = 'tags';
-    const CREATED_AT_PROPERTY = 'created_at';
-    const TOPIC_NAME = 'Topic';
-    const BUCKETS = 'buckets';
-    const ONE_MONTH_AGO = "1 month ago";
-    const NOW = "now";
-    private $dateFormat = 'Y-m-d';
-    private $repositoryManagerObject;
     private $boolQuery;
     private $fieldQuery;
-    private $scores = ['10','9', '8', '7', '6' ,'5','4', '3', '2', '1'];
+    private $scores = ['10', '9', '8', '7', '6' ,'5','4', '3', '2', '1'];
     private $amountOfEachScore = [];
     private $transformedArray;
 
-    public function __construct(RepositoryManagerInterface $repositoryManager)
+   public function __construct(RepositoryManagerInterface $repositoryManager)
     {
-        $this->repositoryManagerObject = $repositoryManager;
         $this->boolQuery = new BoolQuery();
         $this->fieldQuery = new Match();
-        $this->matchAllQuery = new \Elastica\Query\MatchAll();
-        $this->query = new \Elastica\Query($this->matchAllQuery);
-        $this->topicAggregation = new \Elastica\Aggregation\Terms(self::TOPIC_NAME);
         $this->transformedArray = new ArrayKeysTransformer();
+        parent::__construct($repositoryManager);
     }
 
-    /**
-     * This function looks in the ElasticSearch database to get the top 5 categories that are
-     * the most influenced in the current month.
-     */
-    public function searchMostInfluencedOfTheMonth()
+    public function search()
     {
-        $repositoryPostTreated = $this->repositoryManagerObject->getRepository(self::REPOSITORY);
         $currentMonthFilter = $this->getTimeRangeFilter();
         $this->boolQuery->addMust($currentMonthFilter);
-        $this->amountOfEachScore = $this->getAmountOfEachScore($repositoryPostTreated);
+        $this->amountOfEachScore = $this->getAmountOfEachScore($this->repositoryManagerObject);
         $amountOfEachScoreTransformed = $this->transformedArray->getArrayTransformed($this->amountOfEachScore);
         return array_slice ($amountOfEachScoreTransformed,
             self::START_ARRAY_POSITION,
@@ -58,23 +38,6 @@ class MostRatedTopicsOfTheMonth
         );
     }
 
-//TODO: Pending to improve how to calculate the date
-    private function getTimeRangeFilter(){
-        $rangeLower = new Filtered(
-            new BoolQuery(),
-            new Range(self::CREATED_AT_PROPERTY, array(
-                'gte' => date($this->dateFormat, strtotime(self::ONE_MONTH_AGO))
-            ))
-        );
-
-        $timeRangeFilter = new Filtered(
-            $rangeLower,
-            new Range(self::CREATED_AT_PROPERTY, array(
-                'lte' => date($this->dateFormat, strtotime(self::NOW))
-            ))
-        );
-        return $timeRangeFilter;
-    }
     private function getAmountOfEachScore($repositoryPostTreated){
         foreach($this->scores as $score ){
             $this->fieldQuery->setFieldQuery(self::SCORE_PROPERTY, $score);
