@@ -2,10 +2,16 @@
 
 namespace SearchBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
- * @ORM\Table(name="NormalizedPost")
+ * @ORM\Table(
+ *     name="NormalizedPost",
+ *     options={
+ *     "collate":"utf8mb4_general_ci",
+ *     "charset":"utf8mb4"}
+ * )
  */
 class NormalizedPost
 {
@@ -17,17 +23,17 @@ class NormalizedPost
     public $id;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=TRUE)
      */
     public $content;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=TRUE)
      */
     public $lang;
 
     /**
-     * @ORM\Column(type="text", nullable=TRUE)
+     * @ORM\Column(type="json_array", nullable=TRUE)
      */
     public $tags;
 

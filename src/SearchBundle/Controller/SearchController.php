@@ -16,7 +16,7 @@ class SearchController extends Controller
     public function mostSpokenTopicsOfTheMonthControllerAction(Request $request)
     {
         $mostSpokenThemeOfTheMonth = $this->get('most_spoken_of_the_month')->search();
-        return new JsonResponse($mostSpokenThemeOfTheMonth);
+        return new JsonResponse($mostSpokenThemeOfTheMonth, 200, ['Access-Control-Allow-Origin'=>'*']);
 
     }
 
@@ -26,7 +26,7 @@ class SearchController extends Controller
     public function mostInfluencedTopicOfTheMonthAction(Request $request)
     {
         $mostInfluencedThemeOfTheMonth = $this->get('most_influenced_of_the_month')->search();
-        return new JsonResponse($mostInfluencedThemeOfTheMonth);
+        return new JsonResponse($mostInfluencedThemeOfTheMonth, 200, ['Access-Control-Allow-Origin'=>'*']);
 
     }
 
@@ -35,9 +35,10 @@ class SearchController extends Controller
      */
     public function evolutionMostSpokenTopic(Request $request)
     {
+        $topic = $request->get('topic_key');
         //$evolutionResultOfATopic = $this->get('evolution_of_the_most_spoken_topics')->setEvolutionChartOfTheMostSpoken($topic);
         $evolutionResultOfATopic = $this->get('evolution_of_the_most_spoken_topics')->setEvolutionChartOfTheMostSpoken('london');
-        return new JsonResponse($evolutionResultOfATopic);
+        return new JsonResponse($evolutionResultOfATopic, 200, ['Access-Control-Allow-Origin'=>'*']);
 
     }
 
@@ -47,7 +48,7 @@ class SearchController extends Controller
     public function lastPostAction(Request $request)
     {
         $lastPost = $this->get('last_post')->getLatestPost();
-        return new JsonResponse($lastPost);
+        return new JsonResponse($lastPost, 200, ['Access-Control-Allow-Origin'=>'*']);
 
     }
 
@@ -58,7 +59,7 @@ class SearchController extends Controller
     {
         $foundInPosts = $this->get('search_in_posts')->getResultSearch('london');
         //$foundInPosts = $this->get('search_in_posts')->getResultSearch($searchedWord);
-        return new JsonResponse($foundInPosts);
+        return new JsonResponse($foundInPosts, 200, ['Access-Control-Allow-Origin'=>'*']);
 
     }
 }
