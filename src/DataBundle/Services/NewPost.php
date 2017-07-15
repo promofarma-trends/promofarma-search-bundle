@@ -23,7 +23,7 @@ class NewPost
     public function createNewPost($message)
     {
         $date = new \DateTime($message['created_at']['date']);
-        $date->format('Y-m-d');
+        $date->format('Y-m-d H:i:s');
         $this->post->setContent(json_encode($message['content']));
         $this->post->setLang($message['lang']);
         $this->post->setTags($message['tags']);
