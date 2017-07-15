@@ -22,27 +22,22 @@ class NewPost
 
     public function createNewPost($message)
     {
-
-        dump($message);
-        var_dump( json_encode($message['content']));
-
-        $this->post->setContent( json_encode($message['content']));
+        $date = new \DateTime($message['created_at']['date']);
+        $date->format('Y-m-d');
+        $this->post->setContent(json_encode($message['content']));
         $this->post->setLang($message['lang']);
-        $this->post->setTags(['london', 'US']);
+        $this->post->setTags($message['tags']);
         $this->post->setScore($message['score']);
-        $this->post->setCreatedAt(new \DateTime('2017-07-16 16:09:05'));
+        $this->post->setCreatedAt($date);
         $this->post->setSource($message['source']);
         sleep(5);
         $this->entityManagerObject->persist($this->post);
         $this->entityManagerObject->flush();
-
         $this->populateCommand();
-
     }
 
     private function populateCommand()
     {
-
         $application = new Application($this->kernel);
         $application->setAutoExit(false);
         $input = new ArrayInput(array(

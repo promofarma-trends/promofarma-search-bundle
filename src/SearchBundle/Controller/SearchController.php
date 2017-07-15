@@ -36,8 +36,7 @@ class SearchController extends Controller
     public function evolutionMostSpokenTopic(Request $request)
     {
         $topic = $request->get('topic_key');
-        //$evolutionResultOfATopic = $this->get('evolution_of_the_most_spoken_topics')->setEvolutionChartOfTheMostSpoken($topic);
-        $evolutionResultOfATopic = $this->get('evolution_of_the_most_spoken_topics')->setEvolutionChartOfTheMostSpoken('london');
+        $evolutionResultOfATopic = $this->get('evolution_of_the_most_spoken_topics')->setEvolutionChartOfTheMostSpoken($topic);
         return new JsonResponse($evolutionResultOfATopic, 200, ['Access-Control-Allow-Origin'=>'*']);
 
     }
@@ -55,10 +54,13 @@ class SearchController extends Controller
     /**
      * @Route("/searchInPosts", name="searchInPosts")
      */
-    public function searchInPostsAction(Request $request/*,string $searchedWord*/)
+    public function searchInPostsAction(Request $request)
     {
-        $foundInPosts = $this->get('search_in_posts')->getResultSearch('london');
-        //$foundInPosts = $this->get('search_in_posts')->getResultSearch($searchedWord);
+        $searchedWord = $request->get('searched_word');
+        $foundInPosts = $this->get('search_in_posts')->getResultSearch($searchedWord);
+        if ($foundInPosts === null){
+            return new JsonResponse('Request not found', 404, ['Access-Control-Allow-Origin'=>'*']);
+        }
         return new JsonResponse($foundInPosts, 200, ['Access-Control-Allow-Origin'=>'*']);
 
     }

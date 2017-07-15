@@ -11,14 +11,14 @@ class SearchInPosts implements ElasticRepository
     const TAGS_PROPERTY = 'tags';
     const CONTENT_PROPERTY = 'content';
     const SEARCHED_WORD_KEY = 'searched_word';
-    const SEARCH_NUMBER_KEY = 'number_searched_word';
+    const SEARCH_NUMBER_KEY = 'searched_word_occurrences';
     const SEARCH_EVOLUTION_KEY = 'evolution_searched_word';
     private $repositoryManagerObject;
     private $tagsQuery;
     private $contentQuery;
     private $boolQuery;
     public function __construct(RepositoryManagerInterface $repositoryManager, EvolutionOfTheMostSpokenTopics $evolutionChart = null){
-        $this->repositoryManagerObject = $repositoryManager;
+        $this->repositoryManagerObject = $repositoryManager->getRepository(self::REPOSITORY);
         $this->tagsQuery = new Match();
         $this->contentQuery = new Match();
         $this->boolQuery = new BoolQuery();
@@ -53,8 +53,7 @@ class SearchInPosts implements ElasticRepository
     }
 
     private function getNumberOfQueryResults($query){
-        $repositoryPostTreated = $this->repositoryManagerObject->getRepository(self::REPOSITORY);
-        $adapter = $repositoryPostTreated->createPaginatorAdapter($query);
+        $adapter = $this->repositoryManagerObject->createPaginatorAdapter($query);
         $amountOfAWord = $adapter->getTotalHits();
         return $amountOfAWord;
     }

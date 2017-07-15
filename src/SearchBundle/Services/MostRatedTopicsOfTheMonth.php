@@ -31,6 +31,7 @@ class MostRatedTopicsOfTheMonth extends MostOfTheMonth
         $this->boolQuery->addMust($currentMonthFilter);
         $this->amountOfEachScore = $this->getAmountOfEachScore($this->repositoryManagerObject);
         $amountOfEachScoreTransformed = $this->checkIfThereIsData();
+        $amountOfEachScoreTransformed = call_user_func_array('array_merge', $amountOfEachScoreTransformed);
         return array_slice ($amountOfEachScoreTransformed,
             self::START_ARRAY_POSITION,
             self::MAXIMUM_ARRAY_LENGTH,
@@ -48,7 +49,7 @@ class MostRatedTopicsOfTheMonth extends MostOfTheMonth
             $this->query->setSize(0);
             $aggregation = $repositoryPostTreated->createPaginatorAdapter($this->query);
             $aggregationResult = $aggregation->getAggregations();
-            $this->amountOfEachScore[$score] = $aggregationResult[self::TOPIC_NAME][self::BUCKETS];
+            $this->amountOfEachScore[] = $aggregationResult[self::TOPIC_NAME][self::BUCKETS];
         }
         return $this->amountOfEachScore;
     }
