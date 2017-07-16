@@ -15,7 +15,6 @@ class IndexPostMessageHandler
     {
         $newPost = new NewPost($this->manager);
         $postMessage = json_decode($message, true);
-
         $newPost->createNewPost($postMessage);
     }
 }

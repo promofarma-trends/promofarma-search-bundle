@@ -22,8 +22,9 @@ class MostSpokenTopicsOfTheMonth extends MostOfTheMonth
     private function getTimeAndTagsFilter($currentMonthFilter)
     {
         $this->topicAggregation->setField(self::TAGS_PROPERTY);
+        $this->topicAggregation->setSize(0);
         $this->query->setQuery($currentMonthFilter);
         $this->query->addAggregation($this->topicAggregation);
-        $this->query->setSize(0);
+
     }
 }

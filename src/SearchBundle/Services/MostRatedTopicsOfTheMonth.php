@@ -11,7 +11,7 @@ use SearchBundle\Services\Domain\ArrayKeysTransformer;
 class MostRatedTopicsOfTheMonth extends MostOfTheMonth
 {
     const SCORE_PROPERTY = 'score';
-    const SCORES = ['10', '9', '8', '7', '6' ,'5','4', '3', '2', '1'];
+    const SCORES = ['10', '9', '8', '7', '6' ,'5','4', '3', '2', '1', '0'];
     private $boolQuery;
     private $fieldQuery;
     private $amountOfEachScore = [];
@@ -46,7 +46,7 @@ class MostRatedTopicsOfTheMonth extends MostOfTheMonth
             $this->topicAggregation->setField(self::TAGS_PROPERTY);
             $this->query->setQuery($this->boolQuery);
             $this->query->addAggregation($this->topicAggregation);
-            $this->query->setSize(0);
+            $this->topicAggregation->setSize(0);
             $aggregation = $repositoryPostTreated->createPaginatorAdapter($this->query);
             $aggregationResult = $aggregation->getAggregations();
             $this->amountOfEachScore[] = $aggregationResult[self::TOPIC_NAME][self::BUCKETS];

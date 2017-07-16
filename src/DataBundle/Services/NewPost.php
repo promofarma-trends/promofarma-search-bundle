@@ -30,8 +30,8 @@ class NewPost
         $this->post->setScore($message['score']);
         $this->post->setCreatedAt($date);
         $this->post->setSource($message['source']);
-        sleep(5);
         $this->entityManagerObject->persist($this->post);
+        sleep(5);
         $this->entityManagerObject->flush();
         $this->populateCommand();
     }
@@ -43,7 +43,6 @@ class NewPost
         $input = new ArrayInput(array(
             'command' => 'fos:elastica:populate'
         ));
-        // Use the NullOutput class instead of BufferedOutput.
         $output = new NullOutput();
         $application->run($input, $output);
     }
