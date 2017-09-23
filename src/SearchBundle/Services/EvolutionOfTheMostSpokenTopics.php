@@ -21,6 +21,8 @@ class EvolutionOfTheMostSpokenTopics implements ElasticRepository
     const CREATED_AT_PROPERTY = 'created_at';
     const DEFAULT_DATE_FORMAT = 'Y-m-d';
     const INCREASE_ONE_DATE = '+1 day';
+    const TWO_MONTH_AGO = "2 month ago";
+    const NOW = "now";
     private $repository;
     private $fieldQuery;
     private $amountOfEachCategory = [];
@@ -53,6 +55,13 @@ class EvolutionOfTheMostSpokenTopics implements ElasticRepository
     }
 
     public function getFirstPostDate(){
+        $boolQuery = new BoolQuery();
+        $timeRange = $this->setTimeRangeFilter(
+            date(self::DEFAULT_DATE_FORMAT, strtotime(self::TWO_MONTH_AGO)),
+            date(self::DEFAULT_DATE_FORMAT, strtotime(self::NOW))
+        );
+        $boolQuery->addMust($timeRange);
+        $this->query->setQuery($boolQuery);
         $this->query->addSort(array(self::CREATED_AT_PROPERTY => array('order' => 'asc')));
         $allPostsTopic = $this->repository->find($this->query);
         $firstPost = reset($allPostsTopic);
@@ -67,20 +76,24 @@ class EvolutionOfTheMostSpokenTopics implements ElasticRepository
             $this->fieldQuery->setFieldQuery(self::TAGS_PROPERTY, array($topic));
             $boolQuery->addMust($this->fieldQuery);
             $transformedDate = date(self::DEFAULT_DATE_FORMAT, $startDate);
-            $timeRange = $this->setTimeRangeFilter($transformedDate);
+            $timeRange = $this->setTimeRangeFilter($transformedDate, $transformedDate);
             $boolQuery->addMust($timeRange);
             $adapter = $this->repository->createPaginatorAdapter($boolQuery);
-            $amountOfACategory = $adapter->getTotalHits();
+            if(is_null($adapter->getTotalHits()) == true){
+               $amountOfACategory = 0;
+            }else{
+                $amountOfACategory = $adapter->getTotalHits();
+            }
             $this->amountOfEachCategory[] = $amountOfACategory;
             $this->eachDayArray[] = $transformedDate;
             $startDate = strtotime(self::INCREASE_ONE_DATE, $startDate);
         }
     }
 
-    private function setTimeRangeFilter(string $startDate){
+    private function setTimeRangeFilter(string $startDate, string $endDate){
         $timeRangeFilter = $this->dateFilter->getTimeRangeFilter(
             $startDate,
-            $startDate
+            $endDate
         );
         return $timeRangeFilter;
     }
